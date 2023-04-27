@@ -15,7 +15,7 @@ app.get("/", function (req, res) {
 
 app.get("/api/:date?", (req, res) => {
   let { date } = req.params;
-  let isValideDate = Date.parse(date);
+  let isValideDate = !!Date.parse(date);
   let isTimestampString = /^\d+$/.test(date);
   let unix;
   let utc;
