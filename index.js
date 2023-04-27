@@ -1,7 +1,4 @@
-// index.js
-// where your node app starts
-
-// init project
+require('dotenv').config();
 var express = require('express');
 var app = express();
 
@@ -10,23 +7,47 @@ var app = express();
 var cors = require('cors');
 app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 204
 
-// http://expressjs.com/en/starter/static-files.html
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
 
-// http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+app.get("/api/:date?", (req, res) => {
+  let { date } = req.params;
+  let isValideDate = Date.parse(date);
+  let isTimestampString = /^\d+$/.test(date);
+  let unix;
+  let utc;
 
-// your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
+  if (!date) {
+    console.log("there is no date");
+    unix = Date.now();
+    utc = new Date();
+    utc = utc.toUTCString();
+    res.json({ unix, utc });
+
+  } else if (!isValideDate) {
+    if(isTimestampString) {
+      console.log("it is a timestamp string");
+      unix = parseInt(date);
+      utc = new Date(unix);
+      utc = utc.toUTCString();
+      res.json({ unix, utc });
+
+    } else {
+      console.log("there is a date, but the date is not valid");
+      res.json({ error: 'Invalide Date' });
+    }
+  } else {
+    console.log("there is a valid date");
+    utc = new Date(date);
+    utc = utc.toUTCString();
+    unix = Date.parse(date);
+    res.json({ unix, utc });
+  }
 });
 
-
-
-// listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
