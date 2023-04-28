@@ -14,7 +14,7 @@ app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 20
 /**
  * Serve static files (CSS, JavaScript, images) from the 'public' directory
  */
-app.use(express.static(__dirname + '/public'));
+app.use("/public", express.static(__dirname + '/public'));
 
 /**
  * Handle the root route and serves the index.html file.
