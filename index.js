@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000;
  * so that your API is remotely testable by FreeCodeCamp
  * @see {@link https://www.npmjs.com/package/cors}
  */
-var cors = require('cors');
+const cors = require('cors');
 app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 204
 
 /**
@@ -17,15 +17,36 @@ app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 20
 app.use("/public", express.static(__dirname + '/public'));
 
 /**
- * Handle the root route and serves the index.html file.
+ * Handle the root route and serve the index.html file
  */
 app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
 /**
- * Handle the API route with an optional date parameter.
- * @param {string} [date] - An optional date string or Unix timestamp.
+ * @api {get} /api/:date? Get Date Information
+ * @apiName GetDateInfo
+ * @apiGroup DateInfo
+ *
+ * @apiParam {String} [date] Optional date parameter, either a valid date string or a Unix timestamp. If omitted, the current date and time will be used.
+ *
+ * @apiSuccess {Number} unix The Unix timestamp representation of the input date.
+ * @apiSuccess {String} utc The UTC string representation of the input date.
+ *
+ * @apiSuccessExample {json} Success-Response (Current Date):
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "unix": 1645649127625,
+ *       "utc": "Sat, 29 Jan 2023 18:45:27 GMT"
+ *     }
+ *
+ * @apiError {String} error Error message when the input date is invalid.
+ *
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "error": "Invalid Date"
+ *     }
  */
 app.get("/api/:date?", (req, res) => {
   let { date } = req.params;
@@ -71,8 +92,8 @@ app.get("/api/:date?", (req, res) => {
 });
 
 /**
- * Starts the server and logs the listening port.
+ * Start the server and log the listening port
  */
-var listener = app.listen(port, function () {
-  console.log('Your app is listening on port ' + listener.address().port);
+const listener = app.listen(port, function () {
+  console.log('Listening on port ' + listener.address().port);
 });
